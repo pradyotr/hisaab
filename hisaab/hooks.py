@@ -5,6 +5,8 @@ app_description = "A personal accounting app to manage incomes and expenditures 
 app_email = "pradyotraina@gmail.com"
 app_license = "unlicense"
 
+from hisaab.constants.doctypes import DOCTYPES
+
 # Apps
 # ------------------
 
@@ -242,3 +244,6 @@ app_license = "unlicense"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures = [
+    DOCTYPES.get("Pattern Definition")
+]

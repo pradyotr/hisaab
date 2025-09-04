@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-02 17:29:13.760844",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "statement_file",
+  "extracted_details_section",
+  "bank",
+  "ifsc",
+  "column_break_vkgb",
+  "account_number"
+ ],
+ "fields": [
+  {
+   "fieldname": "statement_file",
+   "fieldtype": "Attach",
+   "label": "Statement File"
+  },
+  {
+   "fieldname": "extracted_details_section",
+   "fieldtype": "Section Break",
+   "label": "Extracted Details"
+  },
+  {
+   "fieldname": "bank",
+   "fieldtype": "Data",
+   "label": "Bank",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ifsc",
+   "fieldtype": "Data",
+   "label": "IFSC",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_vkgb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "account_number",
+   "fieldtype": "Data",
+   "label": "Account Number",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-04 16:11:36.639332",
+ "modified_by": "Administrator",
+ "module": "Hisaab",
+ "name": "Statement Upload",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

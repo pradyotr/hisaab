@@ -1,0 +1,20 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Pattern Definition",
+  "for": "Account Number",
+  "modified": "2025-09-04 12:54:27.598900",
+  "name": "q6al9up7cq",
+  "pattern": "[\n    {\"LOWER\":{\"IN\": [\"account\", \"ac\", \"acct\", \"acc\"]}},\n    {\"IS_SPACE\": true, \"OP\":\"*\"},\n    {\"LOWER\":{\"IN\": [\"number\", \"no\"]}},\n    {\"IS_SPACE\": true, \"OP\":\"*\"},\n    {\"IS_PUNCT\": true, \"OP\": \"?\"},\n    {\"IS_SPACE\": true, \"OP\":\"*\"},\n    {\"IS_PUNCT\": true, \"OP\": \"?\"},\n    {\"IS_SPACE\": true, \"OP\":\"*\"},\n    {\"LIKE_NUM\": true}\n]",
+  "type": "spaCy"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pattern Definition",
+  "for": "IFSC Code",
+  "modified": "2025-09-04 16:03:16.054917",
+  "name": "b9o3c3t4kl",
+  "pattern": "[\n    {\"TEXT\": {\"REGEX\": \"^[A-Z]{4}0[A-Z0-9]{6}$\"}}\n]",
+  "type": "spaCy"
+ }
+]
