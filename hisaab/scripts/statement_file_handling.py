@@ -20,20 +20,19 @@ def parse_excel_file(file_path):
     ifsc = find_info_in_text(look_for="IFSC Code", spacy_doc=doc, nlp=nlp)
 
     # parse transactions and reduce dataframe
-    df = df.dropna()
-    if not df.empty():
-        df = df.reset_index(drop=True)
-        df.columns = df.iloc[0]
-        df = df.iloc[1:]
-    else:
-        raise RuntimeError("Error while parsing transactions. Index not found.")
+    txn_start_index = int(df.dropna().index[0])
+    df.columns = df.iloc[txn_start_index]
+    df = df.iloc[txn_start_index + 1:]
+    df.reset_index(drop=True, inplace=True)
+
+    if df.empty():
+        raise RuntimeError("Error while parsing transactions - none found.")
     
     # create transaction entries
 
     # extract date via pandas
-    dates = pd.to_datetime(df[:1].stack(), errors='coerce', format='ISO8601').unstack().dropna(axis=1)
+    dates = pd.to_datetime(df.stack(), errors='coerce', format='%x').unstack().dropna(axis=1, how='all').dropna()
     date_columns = dates.columns
-    dates = pd.to_datetime(df[date_columns[0]], errors='coerce', format='ISO8601')
     df = df.drop(date_columns, axis=1)
 
     return account_number, ifsc
