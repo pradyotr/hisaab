@@ -1,7 +1,7 @@
 import pandas as pd
 import spacy
 from hisaab.constants.path import BENCH_PATH, SITE_PATH
-from hisaab.utils.parsing import find_info_in_text, is_int_or_float, has_atleast_one_letter_and_digit
+from hisaab.utils.parsing import find_info_in_text, is_int_or_float, has_atleast_one_letter_and_digit, evaluate_combo
 
 def parse_excel_file(file_path):
     
@@ -23,6 +23,16 @@ def parse_excel_file(file_path):
 
     if find_txn_data:
         txn_data, metadata = df.iloc[find_txn_data[1]:find_txn_data[2]], pd.concat([df.iloc[:find_txn_data[1]], df.iloc[find_txn_data[2]:]])
+
+        num_cols = []
+        num_mask = txn_data.applymap(is_int_or_float)
+        for col in txn_data.columns:
+            if num_mask[col].any():
+                num_cols.append(col)
+        
+        amount_columns = find_amount_columns(txn_data, num_cols)
+
+        return txn_data, metadata, amount_columns
 
     # extract date via pandas
     dates = pd.to_datetime(df.stack(), errors='coerce', format='%x').unstack().dropna(axis=1, how='all').dropna()
@@ -68,4 +78,21 @@ def find_transaction_data_candidates(df: pd.DataFrame):
     ]
 
     return candidate_clusters
-        
+
+def find_amount_columns(df, num_cols):
+
+    combos = []
+
+    for credit in num_cols:
+        for debit in num_cols:
+            if debit == credit: continue
+            for balance in num_cols:
+                if balance in (credit, debit): continue
+                res = evaluate_combo(df, credit, debit, balance)
+                if res:
+                    res2 = res.copy()
+                    res2.update({"credit_col": credit, "debit_col": debit, "balance_col": balance})
+                    combos.append(res2)
+    if not combos:
+        return {}
+    return sorted(combos, key=lambda x: x["score"], reverse=True)[0]
