@@ -1,6 +1,7 @@
 import frappe
 import spacy
 import json
+import pandas as pd
 from spacy.matcher import Matcher
 from hisaab.constants.doctypes import DOCTYPES
 
@@ -39,3 +40,11 @@ def find_info_in_text(look_for, text=None, spacy_doc=None, nlp=None):
     matches = [ spacy_doc[start:end][-1].text for match_id, start, end in matches ]
 
     return matches[0] if matches else None
+
+def is_int_or_float(arg):
+
+    return pd.notna(arg) and (isinstance(arg, int) or isinstance(arg, float))
+
+def has_atleast_one_letter_and_digit(arg):
+    
+    return isinstance(arg, str) and (any(char.isalpha() for char in arg) and any(char.isdigit() for char in arg))
