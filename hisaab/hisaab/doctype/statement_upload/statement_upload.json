@@ -10,7 +10,14 @@
   "bank",
   "ifsc",
   "column_break_vkgb",
-  "account_number"
+  "account_number",
+  "mapped_columns_section",
+  "date_column",
+  "debit_column",
+  "balance_column",
+  "column_break_xscn",
+  "description_column",
+  "credit_column"
  ],
  "fields": [
   {
@@ -44,12 +51,51 @@
    "fieldtype": "Data",
    "label": "Account Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "mapped_columns_section",
+   "fieldtype": "Section Break",
+   "label": "Mapped Columns"
+  },
+  {
+   "fieldname": "date_column",
+   "fieldtype": "Data",
+   "label": "Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "debit_column",
+   "fieldtype": "Data",
+   "label": "Debit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_column",
+   "fieldtype": "Data",
+   "label": "Balance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_xscn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description_column",
+   "fieldtype": "Data",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "credit_column",
+   "fieldtype": "Data",
+   "label": "Credit",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-04 16:11:36.639332",
+ "modified": "2025-09-08 13:15:53.529780",
  "modified_by": "Administrator",
  "module": "Hisaab",
  "name": "Statement Upload",
