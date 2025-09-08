@@ -54,6 +54,8 @@ def has_atleast_one_letter_and_digit(arg):
 def is_valid_locale_date(value):
 
     try:
+        if not pd.notna(value):
+            return False
         if isinstance(value, datetime):
             return True
         elif isinstance(value, str) and datetime.strptime(value, '%x'):
@@ -144,3 +146,29 @@ def evaluate_combo(df, credit_col, debit_col, balance_col):
         return None
     best = sorted(results, key=lambda x: x["score"], reverse=True)[0]
     return best
+
+def find_spacy_similarity(string, matcher, nlp=None):
+
+    if not nlp:
+        nlp = spacy.load("en_core_web_lg")
+    
+    return nlp(string.lower()).similarity(nlp(matcher.lower()))
+
+def find_best_candidate(candidates, matcher_list, nlp=None):
+
+    if not nlp:
+        nlp = spacy.load("en_core_web_lg")
+    
+    scores = []
+
+    for candidate in candidates:
+        score = 0
+        for syn in matcher_list:
+            sim_score = find_spacy_similarity(candidate, syn, nlp)
+            print(candidate, syn, sim_score)
+            if sim_score == 1:
+                return candidate
+            score += sim_score
+        scores.append(score)
+    
+    return max(zip(candidates, scores), key=lambda tuple: tuple[1])[0]

@@ -1,7 +1,11 @@
 import pandas as pd
 import spacy
+import json
+import frappe
 from hisaab.constants.path import BENCH_PATH, SITE_PATH
-from hisaab.utils.parsing import find_info_in_text, is_int_or_float, has_atleast_one_letter_and_digit, evaluate_combo
+from hisaab.constants.constants import COLMAP
+from hisaab.constants.doctypes import DOCTYPES
+from hisaab.utils.parsing import find_info_in_text, is_int_or_float, has_atleast_one_letter_and_digit, evaluate_combo, is_valid_locale_date, find_best_candidate
 
 def parse_excel_file(file_path):
     
@@ -12,7 +16,7 @@ def parse_excel_file(file_path):
     full_text = df.to_string(index=False, na_rep='')
 
     # spacy pre processing
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load("en_core_web_lg")
     doc = nlp(full_text)
     
     # find bank, account details
@@ -25,14 +29,46 @@ def parse_excel_file(file_path):
         txn_data, metadata = df.iloc[find_txn_data[1]:find_txn_data[2]], pd.concat([df.iloc[:find_txn_data[1]], df.iloc[find_txn_data[2]:]])
 
         num_cols = []
+        date_cols = []
         num_mask = txn_data.applymap(is_int_or_float)
+        date_mask  = pd.to_datetime(txn_data.stack(), errors='coerce', format='%x').unstack().applymap(is_valid_locale_date)
         for col in txn_data.columns:
             if num_mask[col].any():
                 num_cols.append(col)
-        
+            if date_mask[col].all():
+                date_cols.append(col)
+
         amount_columns = find_amount_columns(txn_data, num_cols)
 
-        return txn_data, metadata, amount_columns
+        # find header row
+        txn_columns = txn_data.dropna(axis=1, how='all').columns
+        txn_header = metadata.dropna(subset=txn_columns)
+
+        # map columns
+        if len(txn_header) == 1:
+            colmap = COLMAP.copy()
+            row = txn_header.iloc[0]
+            colmap["debit"]   = row[amount_columns.get("debit_col")]
+            colmap["credit"]  = row[amount_columns.get("credit_col")]
+            colmap["balance"] = row[amount_columns.get("balance_col")]
+            colmap["date"]    = row[date_cols[0]]
+            
+            # find description column
+            description_candidates = [ row[col] for col in txn_data.columns.difference(num_cols + date_cols).tolist()]
+            
+            synonyms = frappe.get_all(
+                DOCTYPES.get("Pattern Definition"),
+                {"for": "Header Alias", "type": "spaCy"},
+                pluck="pattern"
+            )
+            if synonyms:
+                synonyms = json.loads(synonyms[0])
+                colmap["description"] = find_best_candidate(description_candidates, synonyms.get("description"), nlp)
+        else:
+            # handle multiple hits via spaCy similarity
+            pass
+
+        return txn_data, metadata, amount_columns, colmap
 
     # extract date via pandas
     dates = pd.to_datetime(df.stack(), errors='coerce', format='%x').unstack().dropna(axis=1, how='all').dropna()
