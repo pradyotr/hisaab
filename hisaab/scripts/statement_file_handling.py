@@ -7,6 +7,7 @@ from hisaab.constants.path import BENCH_PATH, SITE_PATH
 from hisaab.constants.constants import COLMAP
 from hisaab.constants.doctypes import DOCTYPES
 from hisaab.utils.parsing import find_info_in_text, is_int_or_float, has_atleast_one_letter_and_digit, evaluate_combo, is_valid_locale_date, find_best_candidate, find_spacy_similarity
+from hisaab.scripts.transaction_entries import create_transaction_entries
 
 def parse_excel_file(file_path):
     
@@ -69,19 +70,18 @@ def parse_excel_file(file_path):
             row_idx = Counter(row_idx_prediction).most_common(1)[0][0]
         
         row = txn_header.iloc[row_idx]
-        colmap["debit"]   = row[amount_columns.get("debit_col")]
-        colmap["credit"]  = row[amount_columns.get("credit_col")]
-        colmap["balance"] = row[amount_columns.get("balance_col")]
+        colmap["debit_amount"]   = row[amount_columns.get("debit_col")]
+        colmap["credit_amount"]  = row[amount_columns.get("credit_col")]
+        colmap["remaining_balance"] = row[amount_columns.get("balance_col")]
         description_candidates = [ row[col] for col in txn_data.columns.difference(num_cols + date_cols).tolist()]
-        colmap["date"]    = find_best_candidate([ row[col] for col in date_cols ], synonyms.get("date"), nlp)
-        colmap["description"] = find_best_candidate(description_candidates, synonyms.get("description"), nlp)
+        colmap["transaction_date"]    = find_best_candidate([ row[col] for col in date_cols ], synonyms.get("date"), nlp)
+        colmap["party"] = find_best_candidate(description_candidates, synonyms.get("description"), nlp)
 
-    # extract date via pandas
-    dates = pd.to_datetime(df.stack(), errors='coerce', format='%x').unstack().dropna(axis=1, how='all').dropna()
-    date_columns = dates.columns
-    df = df.drop(date_columns, axis=1)
+    txn_data.columns = row
+    #create transaction entries
+    create_transaction_entries(txn_data.iloc[::-1], colmap, account_number)
 
-    return account_number, ifsc, colmap, [row[col] for col in date_cols]
+    return account_number, ifsc, colmap
 
 def find_transaction_data(df):
 

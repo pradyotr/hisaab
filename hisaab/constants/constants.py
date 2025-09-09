@@ -1,7 +1,7 @@
 COLMAP = {
-    "date": None,
-    "description": None,
-    "debit": None,
-    "credit": None,
-    "balance": None
+    "transaction_date": None,
+    "party": None,
+    "debit_amount": None,
+    "credit_amount": None,
+    "remaining_balance": None
 }

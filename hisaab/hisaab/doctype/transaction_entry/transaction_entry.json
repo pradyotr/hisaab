@@ -7,13 +7,15 @@
  "field_order": [
   "transaction_date",
   "party",
+  "account",
   "column_break_slux",
   "type",
   "subtype",
   "amount_section",
-  "remaining_balance",
+  "credit_amount",
+  "debit_amount",
   "column_break_dbcc",
-  "amount"
+  "remaining_balance"
  ],
  "fields": [
   {
@@ -25,9 +27,8 @@
   },
   {
    "fieldname": "party",
-   "fieldtype": "Link",
-   "label": "Party",
-   "options": "Party"
+   "fieldtype": "Data",
+   "label": "Party"
   },
   {
    "fieldname": "column_break_slux",
@@ -64,18 +65,31 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "amount",
+   "default": "0",
+   "depends_on": "eval:doc.credit_amount",
+   "fieldname": "credit_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Amount",
-   "precision": "2",
-   "reqd": 1
+   "label": "Credit Amount",
+   "precision": "2"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.debit_amount",
+   "fieldname": "debit_amount",
+   "fieldtype": "Currency",
+   "label": "Debit Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Data",
+   "label": "Account"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-02 17:22:45.901530",
+ "modified": "2025-09-09 18:42:05.886036",
  "modified_by": "Administrator",
  "module": "Hisaab",
  "name": "Transaction Entry",
