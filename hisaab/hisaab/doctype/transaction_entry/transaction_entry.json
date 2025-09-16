@@ -8,14 +8,17 @@
   "transaction_date",
   "party",
   "account",
+  "status",
   "column_break_slux",
   "type",
   "subtype",
+  "description",
   "amount_section",
   "credit_amount",
   "debit_amount",
   "column_break_dbcc",
-  "remaining_balance"
+  "remaining_balance",
+  "amount"
  ],
  "fields": [
   {
@@ -28,19 +31,12 @@
   {
    "fieldname": "party",
    "fieldtype": "Data",
-   "label": "Party"
+   "label": "Party",
+   "unique": 1
   },
   {
    "fieldname": "column_break_slux",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "type",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Type",
-   "options": "Expense\nIncome",
-   "reqd": 1
   },
   {
    "fieldname": "subtype",
@@ -83,13 +79,41 @@
   {
    "fieldname": "account",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Account"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Expense\nIncome",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Amount",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-09 18:42:05.886036",
+ "modified": "2025-09-16 18:55:09.140730",
  "modified_by": "Administrator",
  "module": "Hisaab",
  "name": "Transaction Entry",
@@ -109,7 +133,18 @@
   }
  ],
  "row_format": "Dynamic",
+ "search_fields": "transaction_date, credit_amount, debit_amount, subtype, party",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [
+  {
+   "color": "Orange",
+   "title": "Expense"
+  },
+  {
+   "color": "Green",
+   "title": "Income"
+  }
+ ],
+ "title_field": "party"
 }

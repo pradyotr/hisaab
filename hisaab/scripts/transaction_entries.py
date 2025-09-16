@@ -32,7 +32,7 @@ def create_transaction_entries(txn_data, colmap, account_number):
         if row[colmap.get("party")] not in existing_txn_hash:
             data_dict = { col: row[index] for col, index in colmap.items() }
             data_dict["transaction_date"] = getdate(data_dict["transaction_date"])
-            data_dict["type"] = "Expense" if bool(data_dict.get("debit_amount").strip()) else "Income"
+            data_dict["type"] = "Expense" if (isinstance(data_dict.get("debit_amount"), str) and bool(data_dict.get("debit_amount").strip())) or bool(data_dict.get("debit_amount"))  else "Income"
             doc = frappe.get_doc({
                 "doctype": DOCTYPES.get("Transaction Entry"),
                 "account": account_number,

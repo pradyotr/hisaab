@@ -39,7 +39,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-02 17:17:21.897623",
+ "modified": "2025-09-16 20:41:49.102479",
  "modified_by": "Administrator",
  "module": "Hisaab",
  "name": "Transaction Category",
@@ -59,7 +59,10 @@
   }
  ],
  "row_format": "Dynamic",
+ "search_fields": "title, type",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "title"
 }
